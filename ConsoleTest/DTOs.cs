@@ -8,7 +8,7 @@ namespace ConsoleTest
 {
     public interface IRequestCmd
     {
-        IResponseCmd Accept(ICmdVisitor engine);
+        IResponseCmd Accept(IRequestVisitor engine);
     }
 
     public class CreateRequestCmd : IRequestCmd
@@ -16,7 +16,7 @@ namespace ConsoleTest
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public IResponseCmd Accept(ICmdVisitor engine)
+        public IResponseCmd Accept(IRequestVisitor engine)
         {
             return engine.Visit(this);
         }
@@ -26,7 +26,17 @@ namespace ConsoleTest
     {
         public int Id { get; set; }
 
-        public IResponseCmd Accept(ICmdVisitor engine)
+        public IResponseCmd Accept(IRequestVisitor engine)
+        {
+            return engine.Visit(this);
+        }
+    }
+
+    public class UpdateRequestCmd : IRequestCmd
+    {
+        public int Id { get; set; }
+
+        public IResponseCmd Accept(IRequestVisitor engine)
         {
             return engine.Visit(this);
         }
@@ -34,7 +44,7 @@ namespace ConsoleTest
 
     public class NullRequestCmd : IRequestCmd
     {
-        public IResponseCmd Accept(ICmdVisitor engine)
+        public IResponseCmd Accept(IRequestVisitor engine)
         {
             return engine.Visit(this);
         }
@@ -43,14 +53,14 @@ namespace ConsoleTest
 
     public interface IResponseCmd
     {
-        void Accept(IClient client);
+        void Accept(dynamic client);
     }
 
     public class NullResponseCmd : IResponseCmd
     {
-        public void Accept(IClient client)
+        public void Accept(dynamic client)
         {
-            
+
         }
     }
 
@@ -60,7 +70,7 @@ namespace ConsoleTest
         public DateTime WhenCreated { get; set; }
         public bool IsSuccessful { get; set; }
 
-        public void Accept(IClient client)
+        public void Accept(dynamic client)
         {
             client.Visit(this);
         }
@@ -72,7 +82,19 @@ namespace ConsoleTest
         public DateTime WhenDeleted { get; set; }
         public bool IsSuccessful { get; set; }
 
-        public void Accept(IClient client)
+        public void Accept(dynamic client)
+        {
+            client.Visit(this);
+        }
+    }
+
+    public class UpdateResponseCmd : IResponseCmd
+    {
+        public int Id { get; set; }
+        public DateTime WhenUpdated { get; set; }
+        public bool IsSuccessful { get; set; }
+
+        public void Accept(dynamic client)
         {
             client.Visit(this);
         }

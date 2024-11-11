@@ -19,7 +19,7 @@ namespace ConsoleTest
 
         public Task<IResponseCmd> Task => _taskCompletionSource.Task;
 
-        public void ProcessBy(ICmdVisitor engine)
+        public void ProcessBy(IRequestVisitor engine)
         {
             var response = _requestCmd.Accept(engine);
             _taskCompletionSource.SetResult(response);

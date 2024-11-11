@@ -6,17 +6,11 @@ using System.Threading.Tasks;
 
 namespace ConsoleTest
 {
-    public interface IClient
-    {
-        void Visit(CreateResponseCmd createResponseCmd);
-        void Visit(DeleteResponseCmd deleteResponseCmd);
-    }
-
-    public class Client : IClient
+    public class FirstClient
     {
         private readonly IEngine _engine;
 
-        public Client(IEngine engine)
+        public FirstClient(IEngine engine)
         {
             _engine = engine;
         }

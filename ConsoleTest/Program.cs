@@ -20,11 +20,12 @@ namespace ConsoleTest
         private static async Task Run()
         {
             var engine = new Engine();
-            var client = new Client(engine);
+
+            var firstClient = new FirstClient(engine);
+            var secondClient = new SecondClient(engine);
 
             engine.Start();
 
-            List<int> idList = new List<int>();
             int id = 0;
             string name = "Test";
             var random = new Random();
@@ -35,21 +36,24 @@ namespace ConsoleTest
                 Console.WriteLine($"\n{DateTime.Now} > parsed msg)");
 
                 var val = random.Next(2142);
-                switch (val % 3)
+                switch (val % 4)
                 {
                     case 0:
-                        client.OnCreateRequestMsgReceived(id, name);
-                        idList.Add(id);
+                        firstClient.OnCreateRequestMsgReceived(id, name);
                         id++;
                         break;
 
-                    case 1 when idList.Count > 0:
-                        client.OnDeleteRequestMsgReceived(idList[0]);
+                    case 1:
+                        firstClient.OnDeleteRequestMsgReceived(random.Next(id));
                         break;
 
                     case 2:
+                        secondClient.OnUpdateRequestMsgReceived(random.Next(id));
+                        break;
+
+                    case 3:
                     default:
-                        client.OnNullRequestMsgReceived();
+                        firstClient.OnNullRequestMsgReceived();
                         break;
                 }
 

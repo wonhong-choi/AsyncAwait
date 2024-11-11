@@ -15,14 +15,15 @@ namespace ConsoleTest
         Task<IResponseCmd> Receive<T>(T requestCmd) where T : IRequestCmd;
     }
 
-    public interface ICmdVisitor
+    public interface IRequestVisitor
     {
         CreateResponseCmd Visit(CreateRequestCmd createRequestCmd);
         DeleteResponseCmd Visit(DeleteRequestCmd deleteRequestCmd);
         NullResponseCmd Visit(NullRequestCmd nullRequestCmd);
+        UpdateResponseCmd Visit(UpdateRequestCmd updateRequestCmd);
     }
 
-    public class Engine : IEngine, ICmdVisitor
+    public class Engine : IEngine, IRequestVisitor
     {
         private const double INTERVAL_MS = 100;
 
@@ -46,6 +47,14 @@ namespace ConsoleTest
             Interlocked.Exchange(ref _engineState, RUNNING);
 
             StartImpl();
+        }
+
+        public void Stop()
+        {
+            if (IsRunning())
+            {
+                Interlocked.Exchange(ref _engineState, IDLE);
+            }
         }
 
         private void StartImpl()
@@ -86,12 +95,9 @@ namespace ConsoleTest
             _toDoLists.Clear();
         }
 
-        public void Stop()
+        private bool IsRunning()
         {
-            if (IsRunning())
-            {
-                Interlocked.Exchange(ref _engineState, IDLE);
-            }
+            return Interlocked.CompareExchange(ref _engineState, _engineState, RUNNING) == RUNNING;
         }
 
         public Task<IResponseCmd> Receive<T>(T requestCmd) where T : IRequestCmd
@@ -105,7 +111,7 @@ namespace ConsoleTest
             return tcs.Task;
         }
 
-        CreateResponseCmd ICmdVisitor.Visit(CreateRequestCmd createRequestCmd)
+        CreateResponseCmd IRequestVisitor.Visit(CreateRequestCmd createRequestCmd)
         {
             if (_dataById.ContainsKey(createRequestCmd.Id))
             {
@@ -131,7 +137,7 @@ namespace ConsoleTest
             };
         }
 
-        DeleteResponseCmd ICmdVisitor.Visit(DeleteRequestCmd deleteRequestCmd)
+        DeleteResponseCmd IRequestVisitor.Visit(DeleteRequestCmd deleteRequestCmd)
         {
             return new DeleteResponseCmd()
             {
@@ -140,15 +146,23 @@ namespace ConsoleTest
                 WhenDeleted = DateTime.UtcNow,
             };
         }
-        NullResponseCmd ICmdVisitor.Visit(NullRequestCmd nullRequestCmd)
+        
+        UpdateResponseCmd IRequestVisitor.Visit(UpdateRequestCmd updateRequestCmd)
+        {
+            return new UpdateResponseCmd()
+            {
+                Id = updateRequestCmd.Id,
+                IsSuccessful = _dataById.ContainsKey(updateRequestCmd.Id),
+                WhenUpdated = DateTime.UtcNow,
+            };
+        }
+
+        NullResponseCmd IRequestVisitor.Visit(NullRequestCmd nullRequestCmd)
         {
             return new NullResponseCmd();
         }
 
-        private bool IsRunning()
-        {
-            return Interlocked.CompareExchange(ref _engineState, _engineState, RUNNING) == RUNNING;
-        }
+
 
     }
 }
