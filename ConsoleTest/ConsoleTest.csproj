@@ -43,14 +43,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FirstClient.cs" />
-    <Compile Include="Data.cs" />
-    <Compile Include="DTOs.cs" />
-    <Compile Include="Engine.cs" />
+    <Compile Include="DAOs\PlatformDAO.cs" />
+    <Compile Include="DTOs\PlatformInfo.cs" />
+    <Compile Include="Enums\EnumTypes.cs" />
+    <Compile Include="Models\Data.cs" />
+    <Compile Include="DTOs\DTOs.cs" />
+    <Compile Include="Models\Platforms\BasePlatform.cs" />
+    <Compile Include="Models\Platforms\Missile.cs" />
+    <Compile Include="Models\Platforms\Platform.cs" />
+    <Compile Include="Models\MoveStrategies\HoldingStrategy.cs" />
+    <Compile Include="Models\MoveStrategies\ChasingStrategy.cs" />
+    <Compile Include="Models\MoveStrategies\SyncWithOriginStrategy.cs" />
+    <Compile Include="Models\MoveStrategies\IMoveStrategy.cs" />
+    <Compile Include="Services\Engine.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SecondClient.cs" />
-    <Compile Include="TaskCompletionSourceWrapper.cs" />
+    <Compile Include="DAOs\MissileDAO.cs" />
+    <Compile Include="DTOs\RequestCmdTaskWrapper.cs" />
+    <Compile Include="Utils\Geometry.cs" />
+    <Compile Include="VOs\LatLonAlt.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -1,4 +1,4 @@
-﻿namespace ConsoleTest
+﻿namespace ConsoleTest.Models
 {
     public class Data
     {

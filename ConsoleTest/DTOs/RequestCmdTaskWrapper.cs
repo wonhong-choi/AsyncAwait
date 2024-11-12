@@ -1,17 +1,18 @@
-﻿using System;
+﻿using ConsoleTest.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleTest
+namespace ConsoleTest.DTOs
 {
-    public class TaskCompletionSourceWrapper
+    public class RequestCmdTaskWrapper
     {
         private readonly TaskCompletionSource<IResponseCmd> _taskCompletionSource;
         private IRequestCmd _requestCmd;
 
-        public TaskCompletionSourceWrapper(IRequestCmd requestCmd)
+        public RequestCmdTaskWrapper(IRequestCmd requestCmd)
         {
             _requestCmd = requestCmd;
             _taskCompletionSource = new TaskCompletionSource<IResponseCmd>();
@@ -19,7 +20,7 @@ namespace ConsoleTest
 
         public Task<IResponseCmd> Task => _taskCompletionSource.Task;
 
-        public void ProcessBy(IRequestVisitor engine)
+        public void SetResultBy(IRequestVisitor engine)
         {
             var response = _requestCmd.Accept(engine);
             _taskCompletionSource.SetResult(response);

@@ -1,4 +1,7 @@
-﻿using System;
+﻿using ConsoleTest.DAOs;
+using ConsoleTest.Services;
+using ConsoleTest.VOs;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -21,47 +24,64 @@ namespace ConsoleTest
         {
             var engine = new Engine();
 
-            var firstClient = new FirstClient(engine);
-            var secondClient = new SecondClient(engine);
+            var platformDAO = new PlatformDAO(engine);
+            var missileDAO = new MissileDAO(engine);
 
             engine.Start();
 
-            int id = 0;
-            string name = "Test";
-            var random = new Random();
-
             var times = 0;
-            while (times < 20)
+            while (times < 1000)
             {
-                Console.WriteLine($"\n{DateTime.Now} > parsed msg)");
+                Console.WriteLine($"\n{times} ticks: {DateTime.Now} > parsed msg)");
 
-                var val = random.Next(2142);
-                switch (val % 4)
-                {
-                    case 0:
-                        firstClient.OnCreateRequestMsgReceived(id, name);
-                        id++;
-                        break;
-
-                    case 1:
-                        firstClient.OnDeleteRequestMsgReceived(random.Next(id));
-                        break;
-
-                    case 2:
-                        secondClient.OnUpdateRequestMsgReceived(random.Next(id));
-                        break;
-
-                    case 3:
-                    default:
-                        firstClient.OnNullRequestMsgReceived();
-                        break;
-                }
+                SimulateReceivingMsg(times, platformDAO, missileDAO);
 
                 await Task.Delay(1000);
                 times++;
             }
 
             engine.Stop();
+        }
+
+        private static void SimulateReceivingMsg(int times, PlatformDAO platformDAO, MissileDAO missileDAO)
+        {
+            switch (times)
+            {
+                case 0:
+                    platformDAO.OnPlatformCreateRequestReceived(0, new LatLonAlt(37.0, 127.0, 0.0));
+                    break;
+
+                case 2:
+                    platformDAO.OnPlatformCreateRequestReceived(0, new LatLonAlt(37.0, 127.0, 0.0));
+                    break;
+
+                case 4:
+                    platformDAO.OnPlatformCreateRequestReceived(1, new LatLonAlt(38.0, 128.0, 0.0));
+                    break;
+
+                case 8:
+                    platformDAO.OnPlatformCreateRequestReceived(2, new LatLonAlt(40.0, 129.0, 0.0));
+                    break;
+
+                case 10:
+                    platformDAO.OnPlatformCreateRequestReceived(3, new LatLonAlt(40.0, 129.0, 0.0));
+                    break;
+
+                case 12:
+                    platformDAO.OnDeleteRequestMsgReceived(3);
+                    break;
+
+                case 14:
+                    platformDAO.OnPlatformSyncMsgRequestReceived(1, 2);
+                    break;
+
+                case 20:
+                    missileDAO.OnMissileShootRequestReceived(0, 1);
+                    break;
+
+                default:
+                    break;
+            }
         }
     }
 }
