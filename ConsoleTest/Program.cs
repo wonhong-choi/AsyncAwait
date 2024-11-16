@@ -15,7 +15,7 @@ namespace ConsoleTest
     {
         static void Main(string[] args)
         {
-            Run();
+            _ = Run();
 
             Console.ReadLine();
         }
@@ -29,8 +29,7 @@ namespace ConsoleTest
 
             engine.Start();
 
-            var times = 0;
-            while (times < 1000)
+            for(int times = 0; times < 1000; times++)
             {
                 Console.WriteLine($"\n{times} ticks: {DateTime.Now} > parsed msg)");
 
@@ -59,23 +58,23 @@ namespace ConsoleTest
                     platformDAO.OnPlatformCreateRequestReceived(1, new LatLonAlt(38.0, 128.0, 0.0));
                     break;
 
-                case 8:
+                case 6:
                     platformDAO.OnPlatformCreateRequestReceived(2, new LatLonAlt(40.0, 129.0, 0.0));
                     break;
 
-                case 10:
+                case 8:
                     platformDAO.OnPlatformCreateRequestReceived(3, new LatLonAlt(40.0, 129.0, 0.0));
                     break;
 
-                case 12:
+                case 10:
                     platformDAO.OnDeleteRequestMsgReceived(3);
                     break;
 
-                case 14:
+                case 12:
                     platformDAO.OnPlatformSyncMsgRequestReceived(1, 2);
                     break;
 
-                case 20:
+                case 14:
                     missileDAO.OnMissileShootRequestReceived(0, 1);
                     break;
 
